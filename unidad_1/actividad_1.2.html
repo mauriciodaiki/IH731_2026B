@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cliente de APIs públicas</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 0 20px;
+      line-height: 1.5;
+    }
+    h1 { margin-bottom: 8px; }
+    .api {
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 18px;
+      margin: 20px 0;
+    }
+    button {
+      padding: 9px 14px;
+      cursor: pointer;
+      margin-bottom: 10px;
+    }
+    pre {
+      background: #f4f4f4;
+      padding: 12px;
+      overflow-x: auto;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      min-height: 40px;
+    }
+    .error { color: #a00; }
+  </style>
+</head>
+<body>
+  <h1>Cliente de APIs públicas con Fetch</h1>
+  <p>
+    Esta aplicación consulta tres servicios públicos desde el navegador usando
+    <code>fetch()</code> y muestra las respuestas en formato JSON.
+  </p>
+
+  <section class="api">
+    <h2>1. JSONPlaceholder</h2>
+    <p>Obtiene los datos del usuario con identificador 1.</p>
+    <button onclick="consultarJSONPlaceholder()">Consultar API</button>
+    <pre id="resultado-jsonplaceholder">Presiona el botón para consultar.</pre>
+  </section>
+
+  <section class="api">
+    <h2>2. PokéAPI</h2>
+    <p>Obtiene los datos del Pokémon Pikachu.</p>
+    <button onclick="consultarPokeAPI()">Consultar API</button>
+    <pre id="resultado-pokeapi">Presiona el botón para consultar.</pre>
+  </section>
+
+  <section class="api">
+    <h2>3. Dog CEO API</h2>
+    <p>Obtiene la URL de una imagen aleatoria de un perro.</p>
+    <button onclick="consultarDogAPI()">Consultar API</button>
+    <pre id="resultado-dogapi">Presiona el botón para consultar.</pre>
+  </section>
+
+  <script>
+    async function consultarAPI(url, elementoId) {
+      const salida = document.getElementById(elementoId);
+      salida.classList.remove("error");
+      salida.textContent = "Cargando...";
+
+      try {
+        const respuesta = await fetch(url);
+
+        if (!respuesta.ok) {
+          throw new Error(`Error HTTP: ${respuesta.status}`);
+        }
+
+        const datos = await respuesta.json();
+
+        // Print c/sangría 2 espacios
+        salida.textContent = JSON.stringify(datos, null, 2);
+      } catch (error) {
+        salida.classList.add("error");
+        salida.textContent = "No fue posible obtener los datos: " + error.message;
+      }
+    }
+
+    function consultarJSONPlaceholder() {
+      consultarAPI(
+        "https://jsonplaceholder.typicode.com/users/1",
+        "resultado-jsonplaceholder"
+      );
+    }
+
+    function consultarPokeAPI() {
+      consultarAPI(
+        "https://pokeapi.co/api/v2/pokemon/pikachu",
+        "resultado-pokeapi"
+      );
+    }
+
+    function consultarDogAPI() {
+      consultarAPI(
+        "https://dog.ceo/api/breeds/image/random",
+        "resultado-dogapi"
+      );
+    }
+  </script>
+</body>
+</html>
