@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Actividad integradora 1 - API y servicios Web</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="contenedor">
+    <h1>Cliente de APIs públicas con búsqueda dinámica</h1>
+    <p class="introduccion">
+      Esta aplicación consulta tres APIs públicas con <code>fetch()</code>. Cada formulario permite
+      buscar información sin recargar la página y los resultados se muestran en tablas HTML.
+    </p>
+
+    <section class="api">
+      <h2>1. JSONPlaceholder</h2>
+      <p>Busca usuarios por ID, nombre, usuario, correo o ciudad.</p>
+
+      <form id="form-jsonplaceholder" class="busqueda">
+        <label for="buscar-usuario">Buscar usuario:</label>
+        <div class="fila-busqueda">
+          <input id="buscar-usuario" name="consulta" type="search"
+                 placeholder="Ej. Clementina, Bret, 1 o Mrs." required>
+          <button type="submit">Buscar</button>
+        </div>
+      </form>
+
+      <div id="resultado-jsonplaceholder" class="resultado" aria-live="polite">
+        Escribe un dato y presiona Buscar.
+      </div>
+    </section>
+
+    <section class="api">
+      <h2>2. PokéAPI</h2>
+      <p>Busca un Pokémon por nombre o por ID utilizando el mecanismo de búsqueda de la API.</p>
+
+      <form id="form-pokeapi" class="busqueda">
+        <label for="buscar-pokemon">Buscar Pokémon:</label>
+        <div class="fila-busqueda">
+          <input id="buscar-pokemon" name="consulta" type="search"
+                 placeholder="Ej. pikachu o 25" required>
+          <button type="submit">Buscar</button>
+        </div>
+      </form>
+
+      <div id="resultado-pokeapi" class="resultado" aria-live="polite">
+        Escribe un nombre o ID y presiona Buscar.
+      </div>
+    </section>
+
+    <section class="api">
+      <h2>3. Dog CEO API</h2>
+      <p>Busca razas y subrazas de perros a partir del listado proporcionado por la API.</p>
+
+      <form id="form-dogapi" class="busqueda">
+        <label for="buscar-raza">Buscar raza:</label>
+        <div class="fila-busqueda">
+          <input id="buscar-raza" name="consulta" type="search"
+                 placeholder="Ej. chihuahua, pug o bulldog" required>
+          <button type="submit">Buscar</button>
+        </div>
+      </form>
+
+      <div id="resultado-dogapi" class="resultado" aria-live="polite">
+        Escribe una raza y presiona Buscar.
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // Crea una tabla HTML a partir de encabezados y filas
+    function crearTabla(encabezados, filas) {
+      const tabla = document.createElement("table");
+      const thead = document.createElement("thead");
+      const tbody = document.createElement("tbody");
+
+      const filaEncabezado = document.createElement("tr");
+      encabezados.forEach(encabezado => {
+        const th = document.createElement("th");
+        th.textContent = encabezado;
+        filaEncabezado.appendChild(th);
+      });
+      thead.appendChild(filaEncabezado);
+
+      filas.forEach(fila => {
+        const tr = document.createElement("tr");
+        fila.forEach(valor => {
+          const td = document.createElement("td");
+          // Se usa textContent para mostrar únicamente texto y evitar imprimir JSON
+          td.textContent = valor ?? "";
+          tr.appendChild(td);
+        });
+        tbody.appendChild(tr);
+      });
+
+      tabla.appendChild(thead);
+      tabla.appendChild(tbody);
+      return tabla;
+    }
+
+    function mostrarMensaje(elemento, mensaje, esError = false) {
+      elemento.replaceChildren();
+      elemento.classList.toggle("error", esError);
+      const p = document.createElement("p");
+      p.textContent = mensaje;
+      elemento.appendChild(p);
+    }
+
+    function mostrarTabla(elemento, encabezados, filas) {
+      elemento.classList.remove("error");
+      elemento.replaceChildren(crearTabla(encabezados, filas));
+    }
+
+    // 1. JSONPlaceholder: se descarga el listado de usuarios y se filtra localmente
+    document.getElementById("form-jsonplaceholder").addEventListener("submit", async evento => {
+      evento.preventDefault(); // evita que el formulario recargue la página
+
+      const salida = document.getElementById("resultado-jsonplaceholder");
+      const consulta = document.getElementById("buscar-usuario").value.trim().toLowerCase();
+      mostrarMensaje(salida, "Buscando...");
+
+      try {
+        const respuesta = await fetch("https://jsonplaceholder.typicode.com/users");
+        if (!respuesta.ok) throw new Error(`Error HTTP: ${respuesta.status}`);
+
+        const usuarios = await respuesta.json();
+        const filtrados = usuarios.filter(usuario => {
+          const campos = [
+            usuario.id,
+            usuario.name,
+            usuario.username,
+            usuario.email,
+            usuario.address?.city
+          ];
+          return campos.some(valor => String(valor ?? "").toLowerCase().includes(consulta));
+        });
+
+        if (filtrados.length === 0) {
+          mostrarMensaje(salida, "No se encontraron usuarios relacionados con la búsqueda.");
+          return;
+        }
+
+        const filas = filtrados.map(usuario => [
+          usuario.id,
+          usuario.name,
+          usuario.username,
+          usuario.email,
+          usuario.phone,
+          usuario.website,
+          usuario.address?.city ?? ""
+        ]);
+
+        mostrarTabla(
+          salida,
+          ["ID", "Nombre", "Usuario", "Correo", "Teléfono", "Sitio web", "Ciudad"],
+          filas
+        );
+      } catch (error) {
+        mostrarMensaje(salida, "No fue posible obtener los usuarios: " + error.message, true);
+      }
+    });
+
+    // 2. PokéAPI: la búsqueda se realiza directamente mediante /pokemon/{id o nombre}/
+    document.getElementById("form-pokeapi").addEventListener("submit", async evento => {
+      evento.preventDefault();
+
+      const salida = document.getElementById("resultado-pokeapi");
+      const consulta = document.getElementById("buscar-pokemon").value.trim().toLowerCase();
+      mostrarMensaje(salida, "Buscando...");
+
+      try {
+        const url = `https://pokeapi.co/api/v2/pokemon/${encodeURIComponent(consulta)}`;
+        const respuesta = await fetch(url);
+
+        if (respuesta.status === 404) {
+          mostrarMensaje(salida, "No se encontró un Pokémon con ese nombre o ID.");
+          return;
+        }
+        if (!respuesta.ok) throw new Error(`Error HTTP: ${respuesta.status}`);
+
+        const pokemon = await respuesta.json();
+        const tipos = pokemon.types.map(item => item.type.name).join(", ");
+        const habilidades = pokemon.abilities.map(item => item.ability.name).join(", ");
+
+        mostrarTabla(
+          salida,
+          ["ID", "Nombre", "Altura", "Peso", "Tipos", "Habilidades"],
+          [[pokemon.id, pokemon.name, pokemon.height, pokemon.weight, tipos, habilidades]]
+        );
+      } catch (error) {
+        mostrarMensaje(salida, "No fue posible realizar la búsqueda: " + error.message, true);
+      }
+    });
+
+    // 3. Dog CEO API: se usa el listado de razas y se filtra por coincidencia de texto
+    document.getElementById("form-dogapi").addEventListener("submit", async evento => {
+      evento.preventDefault();
+
+      const salida = document.getElementById("resultado-dogapi");
+      const consulta = document.getElementById("buscar-raza").value.trim().toLowerCase();
+      mostrarMensaje(salida, "Buscando...");
+
+      try {
+        const respuesta = await fetch("https://dog.ceo/api/breeds/list/all");
+        if (!respuesta.ok) throw new Error(`Error HTTP: ${respuesta.status}`);
+
+        const datos = await respuesta.json();
+        const filas = [];
+
+        Object.entries(datos.message).forEach(([raza, subrazas]) => {
+          // Incluye la raza principal cuando coincide con la consulta
+          if (raza.includes(consulta)) {
+            filas.push([raza, subrazas.length ? subrazas.join(", ") : "Sin subrazas"]);
+            return;
+          }
+
+          // También permite buscar directamente por nombre de una subraza
+          const subrazasFiltradas = subrazas.filter(subraza => subraza.includes(consulta));
+          if (subrazasFiltradas.length > 0) {
+            filas.push([raza, subrazasFiltradas.join(", ")]);
+          }
+        });
+
+        if (filas.length === 0) {
+          mostrarMensaje(salida, "No se encontraron razas relacionadas con la búsqueda.");
+          return;
+        }
+
+        mostrarTabla(salida, ["Raza", "Subraza(s) relacionada(s)"], filas);
+      } catch (error) {
+        mostrarMensaje(salida, "No fue posible obtener el listado de razas: " + error.message, true);
+      }
+    });
+  </script>
+</body>
+</html>
