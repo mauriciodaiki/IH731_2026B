@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inventario de productos | CRUD</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <main class="contenedor">
+    <header class="cabecera">
+      <h1>Inventario de productos</h1>
+      <p>Consulta, registra, modifica y elimina productos desde una misma aplicación.</p>
+    </header>
+
+    <section class="tarjeta" aria-labelledby="titulo-formulario">
+      <h2 id="titulo-formulario">Agregar producto</h2>
+      <form id="form-producto">
+        <div class="campos">
+          <div class="campo">
+            <label for="nombre">Nombre</label>
+            <input id="nombre" name="nombre" type="text" maxlength="100" required placeholder="Ej. Audífonos Bluetooth">
+          </div>
+          <div class="campo">
+            <label for="categoria">Categoría</label>
+            <input id="categoria" name="categoria" type="text" maxlength="60" required placeholder="Ej. Audio">
+          </div>
+          <div class="campo">
+            <label for="precio">Precio (MXN)</label>
+            <input id="precio" name="precio" type="number" min="0" step="0.01" required placeholder="0.00">
+          </div>
+          <div class="campo">
+            <label for="stock">Existencias</label>
+            <input id="stock" name="stock" type="number" min="0" step="1" required placeholder="0">
+          </div>
+        </div>
+        <div class="botones-formulario">
+          <button id="btn-guardar" class="boton boton-primario" type="submit">Agregar producto</button>
+          <button id="btn-cancelar" class="boton boton-secundario oculto" type="button">Cancelar edición</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="tarjeta" aria-labelledby="titulo-listado">
+      <div class="encabezado-listado">
+        <div>
+          <h2 id="titulo-listado">Productos registrados</h2>
+          <p id="contador" class="texto-secundario">Consultando registros...</p>
+        </div>
+        <button id="btn-actualizar" class="boton boton-secundario" type="button">Actualizar lista</button>
+      </div>
+      <div class="buscador">
+        <label for="buscar">Filtrar productos</label>
+        <input id="buscar" type="search" placeholder="Buscar por ID, nombre o categoría">
+      </div>
+      <div class="tabla-responsive">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">ID</th>
+              <th scope="col">Nombre</th>
+              <th scope="col">Categoría</th>
+              <th scope="col">Precio</th>
+              <th scope="col">Stock</th>
+              <th scope="col">Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="tabla-productos">
+            <tr><td colspan="6">Cargando productos...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+    <p id="mensaje" role="status" aria-live="polite" class="mensaje oculto"></p>
+  </main>
+</body>
+</html>

@@ -1,16 +1,17 @@
+
 const express = require("express");
 const cors = require("cors");
 
 const app = express();
-const PORT = 8000;
+const PORT = 8080;
 
-// Permitir solicitudes desde otros orígenes
+// Permitir comunicación con el cliente HTML
 app.use(cors());
 
-// Permitir recibir datos JSON
+// Permitir recibir información JSON
 app.use(express.json());
 
-// Datos almacenados temporalmente en memoria RAM
+// Base de datos temporal en memoria
 let productos = [
     {
         id: 1,
@@ -35,9 +36,8 @@ let productos = [
     }
 ];
 
-
 // ==========================================
-// READ - Obtener todos los productos
+// READ - Consultar todos los productos
 // GET /productos
 // ==========================================
 
@@ -45,15 +45,14 @@ app.get("/productos", (req, res) => {
     res.status(200).json(productos);
 });
 
-
 // ==========================================
-// READ - Obtener un producto por ID
+// READ - Consultar producto por ID
 // GET /productos/:id
 // ==========================================
 
 app.get("/productos/:id", (req, res) => {
 
-    const id = parseInt(req.params.id);
+    const id = Number(req.params.id);
 
     const producto = productos.find(
         producto => producto.id === id
@@ -68,38 +67,40 @@ app.get("/productos/:id", (req, res) => {
     res.status(200).json(producto);
 });
 
-
 // ==========================================
-// CREATE - Crear un producto
+// CREATE - Agregar producto
 // POST /productos
 // ==========================================
 
 app.post("/productos", (req, res) => {
 
-    const {
-        nombre,
-        categoria,
-        precio,
-        stock
-    } = req.body;
+    const { nombre, categoria, precio, stock } = req.body;
 
-    // Validar información
-    if (!nombre || !categoria || precio === undefined || stock === undefined) {
+    if (
+        typeof nombre !== "string" ||
+        !nombre.trim() ||
+        typeof categoria !== "string" ||
+        !categoria.trim() ||
+        typeof precio !== "number" ||
+        !Number.isFinite(precio) ||
+        precio < 0 ||
+        typeof stock !== "number" ||
+        !Number.isInteger(stock) ||
+        stock < 0
+    ) {
         return res.status(400).json({
-            mensaje: "Faltan datos del producto"
+            mensaje: "Datos del producto inválidos"
         });
     }
 
-    // Crear nuevo ID
-    const nuevoId =
-        productos.length > 0
-            ? Math.max(...productos.map(producto => producto.id)) + 1
-            : 1;
+    const nuevoId = productos.length > 0
+        ? Math.max(...productos.map(p => p.id)) + 1
+        : 1;
 
     const nuevoProducto = {
         id: nuevoId,
-        nombre,
-        categoria,
+        nombre: nombre.trim(),
+        categoria: categoria.trim(),
         precio,
         stock
     };
@@ -107,20 +108,19 @@ app.post("/productos", (req, res) => {
     productos.push(nuevoProducto);
 
     res.status(201).json({
-        mensaje: "Producto creado correctamente",
+        mensaje: "Producto agregado correctamente",
         producto: nuevoProducto
     });
 });
 
-
 // ==========================================
-// UPDATE - Actualizar un producto
+// UPDATE - Actualizar producto
 // PUT /productos/:id
 // ==========================================
 
 app.put("/productos/:id", (req, res) => {
 
-    const id = parseInt(req.params.id);
+    const id = Number(req.params.id);
 
     const indice = productos.findIndex(
         producto => producto.id === id
@@ -132,37 +132,52 @@ app.put("/productos/:id", (req, res) => {
         });
     }
 
-    const {
-        nombre,
-        categoria,
-        precio,
-        stock
-    } = req.body;
+    const actual = productos[indice];
 
-    // Actualizar producto
-    productos[indice] = {
-        id: id,
-        nombre: nombre ?? productos[indice].nombre,
-        categoria: categoria ?? productos[indice].categoria,
-        precio: precio ?? productos[indice].precio,
-        stock: stock ?? productos[indice].stock
+    const actualizado = {
+        id,
+        nombre: req.body.nombre ?? actual.nombre,
+        categoria: req.body.categoria ?? actual.categoria,
+        precio: req.body.precio ?? actual.precio,
+        stock: req.body.stock ?? actual.stock
     };
+
+    if (
+        typeof actualizado.nombre !== "string" ||
+        !actualizado.nombre.trim() ||
+        typeof actualizado.categoria !== "string" ||
+        !actualizado.categoria.trim() ||
+        typeof actualizado.precio !== "number" ||
+        !Number.isFinite(actualizado.precio) ||
+        actualizado.precio < 0 ||
+        typeof actualizado.stock !== "number" ||
+        !Number.isInteger(actualizado.stock) ||
+        actualizado.stock < 0
+    ) {
+        return res.status(400).json({
+            mensaje: "Datos de actualización inválidos"
+        });
+    }
+
+    actualizado.nombre = actualizado.nombre.trim();
+    actualizado.categoria = actualizado.categoria.trim();
+
+    productos[indice] = actualizado;
 
     res.status(200).json({
         mensaje: "Producto actualizado correctamente",
-        producto: productos[indice]
+        producto: actualizado
     });
 });
 
-
 // ==========================================
-// DELETE - Eliminar un producto
+// DELETE - Eliminar producto
 // DELETE /productos/:id
 // ==========================================
 
 app.delete("/productos/:id", (req, res) => {
 
-    const id = parseInt(req.params.id);
+    const id = Number(req.params.id);
 
     const indice = productos.findIndex(
         producto => producto.id === id
@@ -174,16 +189,13 @@ app.delete("/productos/:id", (req, res) => {
         });
     }
 
-    const productoEliminado = productos[indice];
-
-    productos.splice(indice, 1);
+    const productoEliminado = productos.splice(indice, 1)[0];
 
     res.status(200).json({
         mensaje: "Producto eliminado correctamente",
         producto: productoEliminado
     });
 });
-
 
 // ==========================================
 // Ruta no encontrada
@@ -194,7 +206,6 @@ app.use((req, res) => {
         mensaje: "Servicio no encontrado"
     });
 });
-
 
 // ==========================================
 // Iniciar servidor
