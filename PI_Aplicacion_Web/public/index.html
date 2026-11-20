@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#12243b">
+  <meta name="description" content="Administra productos, categorías y movimientos de tu inventario en un solo lugar.">
+  <title>Dashboard | Inventario Seguro</title>
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="vendor/bootstrap/bootstrap.min.css">
+  <link rel="stylesheet" href="styles.css">
+  <script src="vendor/bootstrap/bootstrap.bundle.min.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Saltar al contenido</a>
+  <svg class="icon-library" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <symbol id="i-box" viewBox="0 0 24 24"><path d="m12 3 9 5-9 5-9-5 9-5Zm-9 5v9l9 5 9-5V8M12 13v9M7.5 5.5l9 5"/></symbol>
+    <symbol id="i-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></symbol>
+    <symbol id="i-tag" viewBox="0 0 24 24"><path d="M3 4h9l9 9-8 8-10-10V4Z"/><circle cx="7.5" cy="8.5" r="1"/></symbol>
+    <symbol id="i-move" viewBox="0 0 24 24"><path d="M4 7h16m-4-4 4 4-4 4M20 17H4m4-4-4 4 4 4"/></symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24"><path d="m12 3 8 3v6c0 5-8 9-8 9s-8-4-8-9V6l8-3Z"/><path d="m8 12 3 3 5-6"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></symbol>
+    <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 7v5h-5M4 17v-5h5M5 8a8 8 0 0 1 13-3l2 2M4 17l2 2a8 8 0 0 0 13-3"/></symbol>
+    <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></symbol>
+    <symbol id="i-edit" viewBox="0 0 24 24"><path d="m15 4 5 5M4 15 16 3a2 2 0 0 1 3 0l2 2a2 2 0 0 1 0 3L9 20l-6 1 1-6Z"/></symbol>
+    <symbol id="i-trash" viewBox="0 0 24 24"><path d="M3 6h18M9 6V3h6v3M5 6l1 15h12l1-15M10 10v7M14 10v7"/></symbol>
+    <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
+    <symbol id="i-alert" viewBox="0 0 24 24"><path d="m12 3 10 18H2L12 3ZM12 9v5M12 17v.5"/></symbol>
+    <symbol id="i-key" viewBox="0 0 24 24"><circle cx="8" cy="9" r="5"/><path d="m12 13 8 8m-4-4 3-3m-6 0 3-3"/></symbol>
+  </svg>
+
+  <div class="app-shell">
+    <aside class="sidebar offcanvas-lg offcanvas-start" tabindex="-1" id="sidebar" aria-labelledby="brand-title">
+      <div class="offcanvas-header brand">
+        <a href="#dashboard" class="brand-link"><span class="brand-mark"><svg class="icon"><use href="#i-box"/></svg></span><span id="brand-title">Inventario<span class="brand-second">Seguro</span></span></a>
+        <button type="button" class="btn-close btn-close-white d-lg-none" data-bs-dismiss="offcanvas" data-bs-target="#sidebar" aria-label="Cerrar navegación"></button>
+      </div>
+      <div class="offcanvas-body sidebar-body">
+        <p class="nav-label">ESPACIO DE TRABAJO</p>
+        <nav class="nav flex-column sidebar-nav" aria-label="Navegación principal">
+          <a class="nav-link active" href="#dashboard" data-view="dashboard" aria-current="page"><svg class="icon"><use href="#i-grid"/></svg>Dashboard</a>
+          <a class="nav-link" href="#productos" data-view="productos"><svg class="icon"><use href="#i-box"/></svg>Productos<span id="nav-product-count" class="nav-count">—</span></a>
+          <a class="nav-link" href="#categorias" data-view="categorias"><svg class="icon"><use href="#i-tag"/></svg>Categorías</a>
+          <a class="nav-link" href="#movimientos" data-view="movimientos"><svg class="icon"><use href="#i-move"/></svg>Movimientos</a>
+        </nav>
+        <div class="sidebar-note"><svg class="icon"><use href="#i-shield"/></svg><div><strong>Un inventario confiable</strong><p>Cada entrada y salida conserva su historial.</p></div></div>
+        <div class="sidebar-footer"><span class="project-label">PRODUCTO INTEGRADOR</span><p>Tendencias en Diseño<br>de Servicios</p></div>
+      </div>
+    </aside>
+
+    <div class="workspace">
+      <header class="topbar">
+        <div class="d-flex align-items-center gap-3">
+          <button class="btn btn-light icon-button d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebar" aria-controls="sidebar" aria-label="Abrir navegación"><svg class="icon"><use href="#i-menu"/></svg></button>
+          <span class="breadcrumb-label">Administración <span aria-hidden="true">/</span> <span id="breadcrumb-current">Dashboard</span></span>
+        </div>
+        <div class="connection-actions"><span id="connection-status" class="connection-status"><span class="status-dot"></span>Sin conexión</span><button id="connect-button" class="btn btn-sm btn-outline-secondary" type="button"><svg class="icon"><use href="#i-key"/></svg><span id="connect-label">Conectar</span></button><button id="disconnect-button" class="btn btn-sm btn-link text-secondary" type="button" hidden>Desconectar</button></div>
+      </header>
+
+      <main id="main-content" class="main-content" tabindex="-1">
+        <div class="page-heading"><div><p class="eyebrow" id="today-label"></p><h1 id="page-title" tabindex="-1">Dashboard</h1><p id="page-description" class="page-description">Una vista clara de tu inventario, en tiempo real.</p></div><button id="refresh-button" class="btn btn-outline-secondary" type="button" disabled><svg class="icon"><use href="#i-refresh"/></svg>Actualizar datos</button></div>
+        <div id="messages" aria-live="polite" aria-atomic="true"></div>
+        <div id="loading" class="loading-strip" role="status" hidden><span class="spinner-border spinner-border-sm" aria-hidden="true"></span><span id="loading-label">Consultando inventario…</span></div>
+        <section id="connect-banner" class="connect-banner" aria-labelledby="connect-title"><span class="banner-icon"><svg class="icon"><use href="#i-shield"/></svg></span><div><h2 id="connect-title">Tu inventario, bajo control.</h2><p>Conecta tu inventario para consultar existencias y administrar tus operaciones.</p></div><button class="btn btn-primary" type="button" data-open-auth>Introducir clave</button></section>
+
+        <section id="view-dashboard" class="view" aria-label="Dashboard">
+          <div class="row g-3 metric-grid">
+            <div class="col-6 col-xl-3"><article class="metric-card"><div class="metric-heading"><span>Productos activos</span><span class="metric-icon"><svg class="icon"><use href="#i-box"/></svg></span></div><p id="metric-products" class="metric-value">—</p><p class="metric-caption">En tu catálogo actual</p></article></div>
+            <div class="col-6 col-xl-3"><article class="metric-card"><div class="metric-heading"><span>Categorías</span><span class="metric-icon"><svg class="icon"><use href="#i-tag"/></svg></span></div><p id="metric-categories" class="metric-value">—</p><p class="metric-caption">Para organizar tus productos</p></article></div>
+            <div class="col-6 col-xl-3"><article class="metric-card"><div class="metric-heading"><span>Unidades disponibles</span><span class="metric-icon"><svg class="icon"><use href="#i-grid"/></svg></span></div><p id="metric-units" class="metric-value">—</p><p class="metric-caption">Stock de productos activos</p></article></div>
+            <div class="col-6 col-xl-3"><article class="metric-card"><div class="metric-heading"><span>Sin existencias</span><span class="metric-icon metric-icon-warning"><svg class="icon"><use href="#i-alert"/></svg></span></div><p id="metric-empty" class="metric-value">—</p><p class="metric-caption">Productos activos con stock cero</p></article></div>
+          </div>
+          <div class="row g-4 mt-1">
+            <div class="col-xl-9"><article class="panel"><div class="panel-heading"><div><h2>Movimientos recientes</h2><p>Las últimas entradas y salidas de tu inventario.</p></div><button class="btn btn-sm btn-outline-secondary" type="button" data-go="movimientos">Ver historial</button></div><div id="recent-movements" class="table-responsive"></div></article></div>
+            <div class="col-xl-3"><article class="panel quick-panel"><span class="eyebrow">TU OPERACIÓN DIARIA</span><h2>¿Qué necesitas hacer?</h2><p class="text-secondary">Mantén tus existencias al día con cada movimiento.</p><button class="btn btn-primary w-100" type="button" data-movement-type="ENTRADA"><svg class="icon"><use href="#i-plus"/></svg>Registrar entrada</button><button class="btn btn-outline-secondary w-100" type="button" data-movement-type="SALIDA"><svg class="icon"><use href="#i-move"/></svg>Registrar salida</button><hr><button class="btn btn-link w-100" type="button" data-go="productos">Gestionar productos</button></article></div>
+          </div>
+        </section>
+
+        <section id="view-productos" class="view" aria-label="Productos" hidden>
+          <div class="section-toolbar"><p class="section-summary" id="product-summary">Conecta tu inventario para consultar el catálogo.</p><button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#product-create-panel" aria-expanded="false" aria-controls="product-create-panel"><svg class="icon"><use href="#i-plus"/></svg>Agregar producto</button></div>
+          <div class="collapse" id="product-create-panel"><article class="panel form-panel mb-4"><h2>Nuevo producto</h2><p class="text-secondary">El stock inicia en cero. Registra una entrada para agregar existencias.</p><form id="product-form" novalidate><fieldset data-write-controls disabled><div class="row g-3"><div class="col-md-5"><label class="form-label" for="product-name">Nombre</label><input id="product-name" name="nombre" class="form-control" required maxlength="120" autocomplete="off"><div class="invalid-feedback">Escribe un nombre de hasta 120 caracteres.</div></div><div class="col-md-4"><label class="form-label" for="product-category">Categoría</label><select id="product-category" name="categoria_id" class="form-select" required></select><div class="invalid-feedback">Selecciona una categoría.</div></div><div class="col-md-3"><label class="form-label" for="product-price">Precio (MXN)</label><input id="product-price" name="precio" class="form-control" type="number" min="0" max="1000000000" step="0.01" inputmode="decimal" required><div class="invalid-feedback">Usa un precio válido con hasta dos decimales.</div></div></div><div class="form-actions"><span id="product-category-help" class="form-text">Selecciona la categoría del producto.</span><button id="product-submit" class="btn btn-primary" type="submit">Guardar producto</button></div></fieldset></form></article></div>
+          <article class="panel"><div class="panel-heading flex-wrap"><div><h2>Catálogo de productos</h2><p>Consulta, organiza y administra tus productos.</p></div><form id="search-form" class="search-form" role="search"><label class="visually-hidden" for="product-search">Buscar por nombre o categoría</label><input id="product-search" class="form-control" type="search" placeholder="Nombre o categoría" maxlength="100" disabled><button class="btn btn-outline-secondary" type="submit" id="search-button" disabled><svg class="icon"><use href="#i-search"/></svg><span>Buscar</span></button><button class="btn btn-light" type="button" id="clear-search" disabled>Limpiar</button></form></div><div id="products" class="table-responsive"></div></article>
+        </section>
+
+        <section id="view-categorias" class="view" aria-label="Categorías" hidden>
+          <div class="row g-4"><div class="col-xl-8"><article class="panel"><div class="panel-heading"><div><h2>Tus categorías</h2><p id="category-summary">Organiza los productos de tu inventario.</p></div><span class="section-icon"><svg class="icon"><use href="#i-tag"/></svg></span></div><div id="categories" class="table-responsive"></div></article></div><div class="col-xl-4"><article class="panel form-panel"><h2>Agregar categoría</h2><p class="text-secondary">Una buena organización empieza aquí.</p><form id="category-form" novalidate><fieldset data-write-controls disabled><div class="mb-3"><label class="form-label" for="category-name">Nombre</label><input id="category-name" name="nombre" class="form-control" required maxlength="120" autocomplete="off"><div class="invalid-feedback">Escribe un nombre de hasta 120 caracteres.</div></div><div class="mb-3"><label class="form-label" for="category-description">Descripción <span class="optional-label">(opcional)</span></label><textarea id="category-description" name="descripcion" class="form-control" rows="4" maxlength="300" aria-describedby="category-description-help"></textarea><div id="category-description-help" class="form-text">Máximo 300 caracteres.</div></div><button id="category-submit" class="btn btn-primary w-100" type="submit"><svg class="icon"><use href="#i-plus"/></svg>Guardar categoría</button></fieldset></form></article></div></div>
+        </section>
+
+        <section id="view-movimientos" class="view" aria-label="Movimientos" hidden>
+          <div class="row g-4"><div class="col-xl-4"><article class="panel form-panel"><h2>Registrar movimiento</h2><p class="text-secondary">Cada operación actualiza tus existencias.</p><form id="movement-form" novalidate><fieldset data-write-controls disabled><div class="mb-3"><label class="form-label" for="movement-product">Producto activo</label><select id="movement-product" name="producto_id" class="form-select" required aria-describedby="stock-info"></select><div class="invalid-feedback">Selecciona un producto activo.</div></div><div id="stock-info" class="stock-info" role="status">Selecciona un producto para consultar su stock.</div><div class="row g-3 mb-3"><div class="col-sm-6 col-xl-12 col-xxl-6"><label class="form-label" for="movement-type">Tipo</label><select id="movement-type" name="tipo" class="form-select"><option value="ENTRADA">Entrada</option><option value="SALIDA">Salida</option></select></div><div class="col-sm-6 col-xl-12 col-xxl-6"><label class="form-label" for="movement-quantity">Cantidad</label><input id="movement-quantity" name="cantidad" class="form-control" type="number" min="1" max="9007199254740991" step="1" inputmode="numeric" required><div class="invalid-feedback">Usa un entero positivo dentro del stock disponible para salidas.</div></div></div><div class="mb-3"><label class="form-label" for="movement-note">Nota <span class="optional-label">(opcional)</span></label><textarea id="movement-note" name="nota" class="form-control" rows="3" maxlength="300" aria-describedby="movement-note-help"></textarea><div id="movement-note-help" class="form-text">Motivo del movimiento. Máximo 300 caracteres.</div></div><button id="movement-submit" class="btn btn-primary w-100" type="submit">Registrar movimiento</button></fieldset></form><p class="integrity-note"><svg class="icon"><use href="#i-shield"/></svg>El historial se conserva. Los movimientos registrados no se editan ni se eliminan.</p></article></div><div class="col-xl-8"><article class="panel"><div class="panel-heading flex-wrap"><div><h2>Historial de movimientos</h2><p>Ordenado del más reciente al más antiguo.</p></div><div class="movement-filter"><label class="form-label" for="movement-filter">Filtrar por producto</label><select id="movement-filter" class="form-select form-select-sm" disabled><option value="">Todos los productos</option></select></div></div><div id="movements" class="table-responsive"></div></article></div></div>
+        </section>
+        <footer class="workspace-footer"><span>Inventario Seguro <span aria-hidden="true">·</span> Gestión de inventario</span><span id="last-updated">Sin datos consultados</span></footer>
+      </main>
+    </div>
+  </div>
+
+  <div class="modal fade" id="auth-modal" tabindex="-1" aria-labelledby="auth-title" aria-hidden="true"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header"><h2 class="modal-title fs-5" id="auth-title">Conectar al inventario</h2><button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Cerrar"></button></div><form id="auth-form" novalidate><div class="modal-body"><p class="text-secondary">Introduce tu clave de acceso para consultar y administrar el inventario.</p><div id="auth-messages" aria-live="polite"></div><label class="form-label" for="key">Clave API</label><input id="key" class="form-control" type="password" required autocomplete="off" spellcheck="false" autocapitalize="none" aria-describedby="key-help"><div class="invalid-feedback">Introduce tu clave de acceso.</div><p id="key-help" class="form-text mt-2">La clave permanece solo en memoria durante esta sesión de la página. No se guarda en el navegador.</p></div><div class="modal-footer"><button class="btn btn-light" type="button" data-bs-dismiss="modal">Cancelar</button><button id="auth-submit" class="btn btn-primary" type="submit">Conectar y consultar</button></div></form></div></div></div>
+
+  <div class="modal fade" id="product-edit-modal" tabindex="-1" aria-labelledby="product-edit-title" aria-hidden="true"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header"><h2 class="modal-title fs-5" id="product-edit-title">Editar producto</h2><button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Cerrar"></button></div><form id="product-edit-form" novalidate><div class="modal-body"><div id="product-edit-messages" aria-live="polite"></div><input type="hidden" id="product-edit-id"><fieldset data-write-controls disabled><div class="mb-3"><label class="form-label" for="product-edit-name">Nombre</label><input id="product-edit-name" name="nombre" class="form-control" required maxlength="120"><div class="invalid-feedback">Escribe un nombre de hasta 120 caracteres.</div></div><div class="mb-3"><label class="form-label" for="product-edit-category">Categoría</label><select id="product-edit-category" name="categoria_id" class="form-select" required></select><div class="invalid-feedback">Selecciona una categoría.</div></div><div class="mb-3"><label class="form-label" for="product-edit-price">Precio (MXN)</label><input id="product-edit-price" name="precio" class="form-control" type="number" min="0" max="1000000000" step="0.01" required inputmode="decimal"><div class="invalid-feedback">Usa un precio válido con hasta dos decimales.</div></div><p class="form-text">Las existencias se actualizan únicamente mediante movimientos.</p></fieldset></div><div class="modal-footer"><button class="btn btn-light" type="button" data-bs-dismiss="modal">Cancelar</button><button id="product-edit-submit" class="btn btn-primary" type="submit">Guardar cambios</button></div></form></div></div></div>
+
+  <div class="modal fade" id="category-edit-modal" tabindex="-1" aria-labelledby="category-edit-title" aria-hidden="true"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header"><h2 class="modal-title fs-5" id="category-edit-title">Editar categoría</h2><button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Cerrar"></button></div><form id="category-edit-form" novalidate><div class="modal-body"><div id="category-edit-messages" aria-live="polite"></div><input type="hidden" id="category-edit-id"><fieldset data-write-controls disabled><div class="mb-3"><label class="form-label" for="category-edit-name">Nombre</label><input id="category-edit-name" name="nombre" class="form-control" required maxlength="120"><div class="invalid-feedback">Escribe un nombre de hasta 120 caracteres.</div></div><div class="mb-3"><label class="form-label" for="category-edit-description">Descripción <span class="optional-label">(opcional)</span></label><textarea id="category-edit-description" name="descripcion" class="form-control" rows="4" maxlength="300"></textarea><div class="form-text">Máximo 300 caracteres.</div></div></fieldset></div><div class="modal-footer"><button class="btn btn-light" type="button" data-bs-dismiss="modal">Cancelar</button><button id="category-edit-submit" class="btn btn-primary" type="submit">Guardar cambios</button></div></form></div></div></div>
+
+  <div class="modal fade" id="detail-modal" tabindex="-1" aria-labelledby="detail-title" aria-hidden="true"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header"><h2 class="modal-title fs-5" id="detail-title">Detalle del producto</h2><button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Cerrar"></button></div><div id="product-detail" class="modal-body"></div><div class="modal-footer"><button class="btn btn-primary" type="button" data-bs-dismiss="modal">Cerrar detalle</button></div></div></div></div>
+
+  <div class="modal fade" id="confirm-modal" tabindex="-1" aria-labelledby="confirm-title" aria-describedby="confirm-description" aria-hidden="true"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header"><h2 class="modal-title fs-5" id="confirm-title">Confirmar acción</h2><button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Cerrar"></button></div><div class="modal-body"><div class="confirm-icon"><svg class="icon"><use href="#i-alert"/></svg></div><p id="confirm-description" class="mb-0"></p><div id="confirm-messages" class="mt-3" aria-live="polite"></div></div><div class="modal-footer"><button class="btn btn-light" type="button" data-bs-dismiss="modal">Cancelar</button><button id="confirm-submit" class="btn btn-danger" type="button">Confirmar</button></div></div></div></div>
+  <noscript><div class="noscript-message">Activa JavaScript para utilizar Inventario Seguro.</div></noscript>
+</body>
+</html>

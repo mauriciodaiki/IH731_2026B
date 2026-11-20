@@ -21,5 +21,18 @@ Objetivo: Crear una infraestructura propia de servicios que puedan ser consumido
 3.1 Persistencia de datos
 3.2 Tendencias en servicios
 3.3 Diseño y planeación
-### Producto Integrador. Aplicación web
-Objetivo: Crear una aplicación web para una infraestructura de servicios.
+## Producto Integrador — Inventario Seguro
+
+Como proyecto final de la materia **Tendencias en Diseño de Servicios**, desarrollé una aplicación web para administrar un inventario de productos mediante una arquitectura cliente-servidor.
+
+La aplicación permite gestionar productos y categorías, registrar entradas y salidas de inventario y consultar los movimientos realizados.
+
+**Tecnologías utilizadas:**
+- Node.js y Express para los servicios REST.
+- SQLite para la persistencia de información.
+- HTML5, CSS3, JavaScript y Bootstrap 5 para la interfaz.
+- API Key para controlar el acceso a los servicios.
+
+El proyecto integra los conocimientos adquiridos durante las tres unidades de la materia, incluyendo consumo de APIs, operaciones CRUD, persistencia, diseño de servicios y seguridad básica.
+
+**Proyecto:** [PI_Aplicacion_Web](./PI_Aplicacion_Web/README.md)
