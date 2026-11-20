@@ -75,7 +75,7 @@ function insertarDatosIniciales() {
     });
 }
 
-// READ - Obtener todos los productos
+// READ - Consultar todos los productos
 app.get("/productos", (req, res) => {
 
     const sql = `
@@ -84,7 +84,7 @@ app.get("/productos", (req, res) => {
         ORDER BY id
     `;
 
-    db.all(sql, [], (error, filas) => {
+    db.all(sql, [], (error, productos) => {
 
         if (error) {
             return res.status(500).json({
@@ -92,7 +92,42 @@ app.get("/productos", (req, res) => {
             });
         }
 
-        res.json(filas);
+        res.json(productos);
+    });
+});
+
+// READ - Consultar un producto por ID
+app.get("/productos/:id", (req, res) => {
+
+    const id = Number(req.params.id);
+
+    if (!Number.isInteger(id) || id <= 0) {
+        return res.status(400).json({
+            error: "ID de producto inválido"
+        });
+    }
+
+    const sql = `
+        SELECT id, nombre, categoria, precio, existencias
+        FROM productos
+        WHERE id = ?
+    `;
+
+    db.get(sql, [id], (error, producto) => {
+
+        if (error) {
+            return res.status(500).json({
+                error: "Error al consultar el producto"
+            });
+        }
+
+        if (!producto) {
+            return res.status(404).json({
+                error: "Producto no encontrado"
+            });
+        }
+
+        res.json(producto);
     });
 });
 
